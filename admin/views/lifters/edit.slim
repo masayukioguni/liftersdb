@@ -1,0 +1,16 @@
+.block
+  .secondary-navigation
+    ul.wat-cf
+      li.first==link_to pat(:list), url(:lifters, :index)
+      li==link_to pat(:new), url(:lifters, :new)
+      li.active==link_to pat(:edit), url(:lifters, :edit, :id => @lifter.id)
+  .content
+    h2.title
+      =pat(:edit)
+      =="&nbsp;"
+      =mt(:lifter)
+    .inner
+      ==form_for :lifter, url(:lifters, :update, :id => @lifter.id), :method => :put, :class => :form do |f|
+        ==partial "lifters/form", :locals => { :f => f }
+
+-content_for :sidebar, partial("base/sidebar")
