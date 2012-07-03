@@ -58,6 +58,6 @@ describe "Lifter Model" do
   end
 
   after do
-    Lifter.delete_all
+    #Lifter.delete_all
   end
 end
