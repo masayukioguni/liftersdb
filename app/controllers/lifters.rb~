@@ -19,7 +19,6 @@ Liftersdb.controllers :lifters do
   # end
 
   get :index do
-    @title = "all lifters"
     @lifters = Lifter.all(:order => 'created_at desc')
     render 'lifters/index'
 

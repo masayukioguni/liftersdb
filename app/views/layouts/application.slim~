@@ -1,28 +1,8 @@
-doctype
 html lang="en"
   head
     meta charset="utf-8"
-      title Bootstrap, from Twitter
-      meta content="width=(device-width,)initial-scale=1.0" name="viewport"
-        meta content="" name="description"
-          meta content="" name="author"
-            /! Le styles
-            link href="/stylesheets/bootstrap.css" rel="stylesheet"
-            css:
-            | body {
-              | padding-top: 60px;
-              | padding-bottom: 40px;
-            | }
-            link href="../assets/css/bootstrap-responsive.css" rel="stylesheet"
-            /! Le HTML5 shim, for IE6-8 support of HTML5 elements
-            /![if lt IE 9]
-            | <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-            /! Le fav and touch icons
-            link href="../assets/ico/favicon.ico" rel="shortcut icon"
-            link href="../assets/ico/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon-precomposed" sizes="144x144"
-            link href="../assets/ico/apple-touch-icon-114-precomposed.png" rel="apple-touch-icon-precomposed" sizes="114x114"
-            link href="../assets/ico/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon-precomposed" sizes="72x72"
-            link href="../assets/ico/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon-precomposed"
+    ==partial "layouts/header"
+    title Bootstrap, from Twitter
   body
     .navbar.navbar-fixed-top
       .navbar-inner
@@ -31,7 +11,7 @@ html lang="en"
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.brand href="#"
+          a.brand href="#" pproject Namw
           .nav-collapse
             ul.nav
               li.active
@@ -73,16 +53,16 @@ html lang="en"
       | Le javascript
       | \==================================================
     /! Placed at the end of the document so the pages load faster
-    script src="javascripts/jquery.js"
-    script src="../assets/js/bootstrap-transition.js"
-    script src="../assets/js/bootstrap-alert.js"
-    script src="../assets/js/bootstrap-modal.js"
-    script src="../assets/js/bootstrap-dropdown.js"
-    script src="../assets/js/bootstrap-scrollspy.js"
-    script src="../assets/js/bootstrap-tab.js"
-    script src="../assets/js/bootstrap-tooltip.js"
-    script src="../assets/js/bootstrap-popover.js"
-    script src="../assets/js/bootstrap-button.js"
-    script src="../assets/js/bootstrap-collapse.js"
-    script src="../assets/js/bootstrap-carousel.js"
-    script src="../assets/js/bootstrap-typeahead.js"
+    script src="/javascripts/jquery.js"
+    script src="/javascripts/bootstrap-transition.js"
+    script src="/javascripts/bootstrap-alert.js"
+    script src="/javascripts/bootstrap-modal.js"
+    script src="/javascripts/bootstrap-dropdown.js"
+    script src="/javascripts/bootstrap-scrollspy.js"
+    script src="/javascripts/bootstrap-tab.js"
+    script src="/javascripts/bootstrap-tooltip.js"
+    script src="/javascripts/bootstrap-popover.js"
+    script src="/javascripts/bootstrap-button.js"
+    script src="/javascripts/bootstrap-collapse.js"
+    script src="/javascripts/bootstrap-carousel.js"
+    script src="/javascripts/bootstrap-typeahead.js"
