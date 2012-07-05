@@ -19,7 +19,7 @@ Liftersdb.controllers :lifters do
   # end
 
   get :index do
-    #@project_name = get_project_name
+    @project_name = get_project_name
     index = params[:page] != nil ? params[:page] : 1
     @title = "lifters page:" + index.to_s
     @lifters = Lifter.page(params[:page] || 1).per(5)
