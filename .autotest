@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+require 'autotest'
+
+Autotest.add_hook :initialize do |at|
+ p 'sssssss'
+end
