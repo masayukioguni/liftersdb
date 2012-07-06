@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 3) do
+ActiveRecord::Schema.define(:version => 4) do
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -36,6 +36,18 @@ ActiveRecord::Schema.define(:version => 3) do
     t.date     "birthday"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "records", :force => true do |t|
+    t.integer  "lifter_id"
+    t.integer  "championship_id"
+    t.boolean  "equipment"
+    t.float    "weight"
+    t.float    "squat"
+    t.float    "benchpress"
+    t.float    "deadlift"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
 end
