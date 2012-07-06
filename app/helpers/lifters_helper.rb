@@ -2,6 +2,6 @@
 
 Liftersdb.helpers do
   def get_project_name
-    #return Padrino.configure_apps.project_name
+    return 'Lifters db'
   end
 end

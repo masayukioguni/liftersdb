@@ -27,8 +27,7 @@ html lang="en"
         h2 == @contents_title
         ==yield
       hr
-        footer
-          p © Company 2012
+        ==partial "layouts/footer"
     /! /container
     /!
       | Le javascript
