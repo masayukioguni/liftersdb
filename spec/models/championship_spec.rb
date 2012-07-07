@@ -69,6 +69,6 @@ describe "Championship Model" do
   end
 
   after do
-    Championship.delete_all
+    #Championship.delete_all
   end
 end
