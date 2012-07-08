@@ -1,0 +1,28 @@
+div.container style="margin-top: 10px"
+  table.table.table-striped.table-bordered id="example" cellpadding="0" cellspacing="0" border="0"
+    thead
+      tr
+        th.first id
+        th 名前
+        th 大会名
+        th 体重
+        th スクワット
+        th ベンチプレス
+        th デッドリフト
+        th トータル
+        th フォーミュラ
+        th.last=="&nbsp;"
+    tbody
+      - for record in @records do
+        tr 
+          td.first = record.id
+          td = record.lifter.name
+          td = record.championship.name
+          td = record.weight
+          td = record.squat
+          td = record.benchpress
+          td = record.deadlift
+          td = record.total
+          td = record.formula
+          td.last
+
