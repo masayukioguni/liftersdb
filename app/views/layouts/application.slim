@@ -21,13 +21,10 @@ html lang="en"
               li
                 a href="/championships" ccccc
           /! /.nav-collapse
-    .container
-      /! Main hero unit for a primary marketing message or call to action
-      .hero-unit
-        h2 == @contents_title
-        ==yield
+    
+      ==yield
       hr
-        ==partial "layouts/footer"
+      ==partial "layouts/footer"
     /! /container
     /!
       | Le javascript
@@ -35,6 +32,7 @@ html lang="en"
     /! Placed at the end of the document so the pages load faster
     script src="/javascripts/jquery.js"
     script src="/javascripts/jquery.dataTables.js"
+    script src="/javascripts/dygraph-combined.js"
     script src="/javascripts/DT_bootstrap.js"    
     script src="/javascripts/bootstrap-transition.js"
     script src="/javascripts/bootstrap-alert.js"

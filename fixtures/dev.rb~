@@ -28,19 +28,20 @@ def create(db)
 end
 
 championship_datas = [{"name"=>"全日本パワーリフティング選手権大会", "date"=>"2012-06-03"},
-                      {"name"=>"埼玉県パワーリフティング選手権大会", "date"=>"2011-11-13"}
-        	     ]
+         		      {"name"=>"埼玉県パワーリフティング選手権大会", "date"=>"2011-11-13"}
+        	         ]
 
 def championship(db,datas,at='2012-06-03 00:00:00')
   sql = "insert into championships values (?, ?, ?, ?, ?)"
   datas.each_with_index{|data,index| 
+
   	db.execute(sql, index + 1, data['name'], data['date'], at, at)
   } 
 end  
 
 lifter_datas = [{"name"=>"小国 正之", "gender" => 1, "birthday" => "1980-01-08"},
-                {"name"=>"テスト", "gender" => 0, "birthday" => "1999-01-08"}
-               ]
+         		{"name"=>"テスト", "gender" => 0, "birthday" => "1999-01-08"}
+        	   ]
 
 def lifter(db,datas,at='2012-06-03 00:00:00')
   sql = "insert into  lifters values (?, ?, ?, ?, ?, ?)"
@@ -50,9 +51,9 @@ def lifter(db,datas,at='2012-06-03 00:00:00')
 end  
 
 record_datas = [[1,1,1,64.7,227.5,165.0,200],
-        	[1,2,1,64.7,220,172.5,187.5],
-        	[2,1,1,64.7,220,172.5,187.5]
-               ]
+        	    [1,2,1,64.7,220,172.5,187.5],
+        	    [2,1,1,64.7,220,172.5,187.5]
+        	   ]
 
 def record(db,datas,at='2012-06-03 00:00:00')
   sql = "insert into  records values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"

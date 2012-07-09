@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 Liftersdb.controllers :lifters do
   # get :index, :map => "/foo/bar" do
   #   session[:foo] = "bar"
@@ -18,17 +19,35 @@ Liftersdb.controllers :lifters do
   #   "Hello world!"
   # end
 
-  get :index do
-    #@project_name = get_project_name
-    index = params[:page] != nil ? params[:page] : 1
-    @title = "lifters page:" + index.to_s
-    @lifters = Lifter.page(params[:page] || 1).per(5)
-    p @lifters
+  get :index do    @title = "lifters list:"
+    @lifters = Lifter.all
     render 'lifters/index'
-
   end
 
-  get :show do
+  get :show, :with => :id do
+    id = params[:id]
+    @lifter = Lifter.find(id)
+    lifter = Lifter.where(:gender => id)
+    lifters = lifter.all
+
+    record = Record.joins(:championship)
+    record = record.where(:lifter_id => id).order('championships.date')
+    @records = record.all
+    p @records
+    render 'lifters/show'
+  end
+
+  get :csv, :with => :id do
+    id = params[:id]
+    record = Record.joins(:championship)
+    records = record.where(:lifter_id => id).order('championships.date')
+    records = records.all
+    text = "date,squat,benchpress,deadlift,total,\n";
+    records.each{|record|
+     text += record + ','
+     text += '\n'
+    }
+    @text
   end
 
   post :data do
