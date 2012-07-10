@@ -59,7 +59,7 @@ record_datas = [[1,1,1,64.7,227.5,165.0,200,1],
 def record(db,datas,at='2012-06-03 00:00:00')
   sql = "insert into  records values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   datas.each_with_index{|data,index| 
-  	db.execute(sql, index + 1, data[0], data[1], data[2], data[3], data[4], data[5], data[6], at, at,data[7])
+    db.execute(sql, index + 1, data[0], data[1], data[2], data[3], data[4], data[5], data[6], at, at,data[7])
   } 
 end  
 
