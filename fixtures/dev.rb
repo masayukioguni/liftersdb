@@ -19,7 +19,7 @@ def create(db)
   tables = [
 	'CREATE TABLE "championships" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255), "date" date, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);',
 	'CREATE TABLE "lifters" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar(255), "gender" integer, "birthday" date, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);',
-	'CREATE TABLE "records" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "lifter_id" integer, "championship_id" integer, "equipment" boolean, "weight" float, "squat" float, "benchpress" float, "deadlift" float, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);',
+	'CREATE TABLE "records" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "lifter_id" integer, "championship_id" integer, "equipment" boolean, "weight" float, "squat" float, "benchpress" float, "deadlift" float, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "record_type" integer);',
 	]
 
   tables.each{|sql| 
@@ -49,15 +49,16 @@ def lifter(db,datas,at='2012-06-03 00:00:00')
   } 
 end  
 
-record_datas = [[1,1,1,64.7,227.5,165.0,200],
-        	[1,2,1,64.7,220,172.5,187.5],
-        	[2,1,1,64.7,220,172.5,187.5]
+record_datas = [[1,1,1,64.7,227.5,165.0,200,1],
+        	[1,2,1,64.7,220,172.5,187.5,1],
+        	[2,1,1,64.7,220,172.5,187.5,1],
+                [1,2,1,64.7,0,170,0,0]
                ]
 
 def record(db,datas,at='2012-06-03 00:00:00')
-  sql = "insert into  records values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  sql = "insert into  records values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   datas.each_with_index{|data,index| 
-  	db.execute(sql, index + 1, data[0], data[1], data[2], data[3], data[4], data[5], data[6], at, at)
+  	db.execute(sql, index + 1, data[0], data[1], data[2], data[3], data[4], data[5], data[6], at, at,data[7])
   } 
 end  
 
