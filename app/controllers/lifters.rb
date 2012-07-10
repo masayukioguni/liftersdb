@@ -50,7 +50,7 @@ Liftersdb.controllers :lifters do
     @type = params[:type] ? params[:type] : 1
     records = find_by_equipment_type(@id,@equipment,@type)
     records = records.all
-
+    p records
     text = "date,weight,squat,bencpress,deadlift,total\n";
 
     records.each{|record|
@@ -68,6 +68,7 @@ Liftersdb.controllers :lifters do
       text += "\n"
     }
     @text = text
+    p @text
     return @text
   end
 

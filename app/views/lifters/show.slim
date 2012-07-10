@@ -1,9 +1,6 @@
-.container style="margin-top: 10px" 
-  
-
-  
-  div id="demodiv"
-
+.container style="margin-top: 10px"
+  span6 
+    div id="demodiv"
   table.table.table-striped.table-bordered id="example" cellpadding="0" cellspacing="0" border="0"
     thead
       tr
@@ -27,7 +24,7 @@
   javascript:
     g = new Dygraph(
           document.getElementById("demodiv"),
-          "/lifters/csv/#{params[:id]}?equipment=#{params[:equipment]}&type=#{params[:type]}",
+          "/lifters/csv/#{params[:id]}?equipment=#{@equipment}&type=#{@type}",
           {
               labelsDiv: document.getElementById('status'),
               labelsSeparateLines: true,

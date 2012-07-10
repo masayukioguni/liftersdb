@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 require 'sqlite3'
+require 'csv'
 
 def drop(db)
   tables = [
@@ -28,7 +29,6 @@ def create(db)
 end
 
 championship_datas = [{"name"=>"全日本パワーリフティング選手権大会", "date"=>"2012-06-03"},
-		      {"name"=>"全日本パワーリフティング選手権大会", "date"=>"2012-06-03"},
                       {"name"=>"埼玉県パワーリフティング選手権大会", "date"=>"2011-11-13"}
         	     ]
 
@@ -51,8 +51,30 @@ def lifter(db,datas,at='2012-06-03 00:00:00')
 end  
 
 record_datas = [[1,1,1,64.7,227.5,165.0,200,1],
-        	[1,2,1,64.7,220,172.5,187.5,1],
-        	[2,1,1,64.7,220,172.5,187.5,1],
+        	      [1,2,1,64.7,220,172.5,187.5,1],
+        	      [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [1,1,1,64.7,227.5,165.0,200,1],
+                [1,2,1,64.7,220,172.5,187.5,1],
+                [2,1,1,64.7,220,172.5,187.5,1],
                 [1,2,1,64.7,0,170,0,0]
                ]
 
@@ -63,14 +85,66 @@ def record(db,datas,at='2012-06-03 00:00:00')
   } 
 end  
 
+
+def get_best_result(row,index)
+  value = 0
+  index.upto(index + 2) { |i|
+    tmp = row[i]
+    if tmp != " "
+      if tmp.to_f > 0
+        value = tmp.to_f
+      end
+    end
+  }
+  return value
+end
+
+championship_flag = 0
+players = []
+championship = {}
+
+CSV.open("./fixtures/datas/2012_all_japan_.csv", "r") do |csv|
+  csv.each do |row|
+    if championship_flag == 0 then
+       championship['name'] = row[0]
+       championship['date'] = row[1]
+       championship_flag = 1
+       next
+    end
+    player = {}
+    player['name'] = row[0]
+    player['gender'] = row[1]
+    player['years'] = row[2]
+    player['weight'] = row[3].to_f
+    # 4/5/6
+    player['sq'] = get_best_result(row,4)
+    # 7/8/9
+    player['bp'] = get_best_result(row,7)
+    # 10/11/12
+    player['dl'] = get_best_result(row,10)
+    players.push(player)
+  end
+end
+
+def insert(db,championship,players,at='2012-06-03 00:00:00')
+  sql = "select * from championships WHERE name LIKE '%#{championship['name']}%'"
+  count = db.execute(sql)
+  if [] == count then
+    sql = "insert into championships values (?, ?, ?, ?, ?)"
+    db.execute(sql, 1, championship['name'], championship['date'], at, at)
+  end
+end  
+
 db = SQLite3::Database.new("./db/liftersdb_development.db")
 db.transaction
 begin
   drop(db)
   create(db)
-  championship(db,championship_datas)
-  lifter(db,lifter_datas)
-  record(db,record_datas)
+  insert(db,championship,players)
+  #championship(db,championship_datas)
+
+  #lifter(db,lifter_datas)
+  #record(db,record_datas)
   db.commit
 rescue  => exc
   p exc
