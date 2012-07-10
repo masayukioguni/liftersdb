@@ -23,24 +23,32 @@ Liftersdb.controllers :lifters do
     @lifters = Lifter.all
     render 'lifters/index'
   end
+   
+  def find_by_lifter_id(lifter_id)
+    records = Record.joins(:championship)
+    return records.where(:lifter_id => lifter_id).order('championships.date')
+  end
+
+  def find_by_equipment_powerlifing(lifter_id)
+    records = find_by_lifter_id(lifter_id)
+    records.where(:equipment => 1)
+    return records.all
+  end
 
   get :show, :with => :id do
     @id = params[:id]
+    @equipment = params[:equipment] ? params[:equipment] : 1
+    @type = params[:type] ? params[:type] : 1
     @lifter = Lifter.find(@id)
-    lifter = Lifter.where(:gender => @id)
-    lifters = lifter.all
-
-    record = Record.joins(:championship)
-    record = record.where(:lifter_id => @id).order('championships.date')
-    @records = record.all
-    p @records
+    @records = find_by_equipment_type(@id,@equipment,@type)
     render 'lifters/show'
   end
 
   get :csv, :with => :id do
     @id = params[:id]
-    record = Record.joins(:championship)
-    records = record.where(:lifter_id => @id).order('championships.date')
+    @equipment = params[:equipment] ? params[:equipment] : 1
+    @type = params[:type] ? params[:type] : 1
+    records = find_by_equipment_type(@id,@equipment,@type)
     records = records.all
     text = "date,weight,squat,bencpress,deadlift,total\n";
     records.each{|record|
@@ -57,9 +65,8 @@ Liftersdb.controllers :lifters do
       text += record.total.to_s
       text += "\n"
     }
-
-    @text
-    p text
+    @text = text
+    return @text
   end
 
   post :data do
