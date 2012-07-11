@@ -51,8 +51,8 @@ def lifter(db,datas,at='2012-06-03 00:00:00')
 end  
 
 record_datas = [[1,1,1,64.7,227.5,165.0,200,1],
-         	[1,2,1,64.7,220,172.5,187.5,1],
-        	[1,1,1,64.7,227.5,165.0,200,1],
+        	      [1,2,1,64.7,220,172.5,187.5,1],
+        	      [1,1,1,64.7,227.5,165.0,200,1],
                 [1,2,1,64.7,220,172.5,187.5,1],
                 [1,1,1,64.7,227.5,165.0,200,1],
                 [1,2,1,64.7,220,172.5,187.5,1],
@@ -99,77 +99,40 @@ def get_best_result(row,index)
   return value
 end
 
-def parse_csv(name)
-  players = []
-  championships = []
-  championship = {}
-  championship_flag = 0
-  CSV.open(name, "r") do |csv|
-    csv.each do |row|
-      if championship_flag == 0 then
-         championship['name'] = row[0]
-         championship['date'] = row[1]
-         championship_flag = 1
-         championships.push(championship) 
-         next
-      end
-      player = {}
-      player['name'] = row[0]
-      player['gender'] = row[1]
-      player['years'] = row[2]
-      player['weight'] = row[3].to_f
-      # 4/5/6
-      player['sq'] = get_best_result(row,4)
-      # 7/8/9
-      player['bp'] = get_best_result(row,7)
-      # 10/11/12
-      player['dl'] = get_best_result(row,10)
-      players.push(player)
+championship_flag = 0
+players = []
+championship = {}
+
+CSV.open("./fixtures/datas/2012_all_japan_.csv", "r") do |csv|
+  csv.each do |row|
+    if championship_flag == 0 then
+       championship['name'] = row[0]
+       championship['date'] = row[1]
+       championship_flag = 1
+       next
     end
+    player = {}
+    player['name'] = row[0]
+    player['gender'] = row[1]
+    player['years'] = row[2]
+    player['weight'] = row[3].to_f
+    # 4/5/6
+    player['sq'] = get_best_result(row,4)
+    # 7/8/9
+    player['bp'] = get_best_result(row,7)
+    # 10/11/12
+    player['dl'] = get_best_result(row,10)
+    players.push(player)
   end
-  return players,championships
 end
 
-def insert_championship(db,championship,at='2012-06-03 00:00:00')
-  championship_id = 0
-  record = db.execute("select * from championships where name = '#{championship['name']}' and date = '#{championship['date']}'")
-  if record != []
-    championship_id = record[0][0]
-  else 
-    records = db.execute("select * from championships")
-    championship_id = records.size + 1
-    p "insert #{championship['name']}  #{championship['date']}"
+def insert(db,championship,players,at='2012-06-03 00:00:00')
+  sql = "select * from championships WHERE name LIKE '%#{championship['name']}%'"
+  count = db.execute(sql)
+  if [] == count then
     sql = "insert into championships values (?, ?, ?, ?, ?)"
-    db.execute(sql, championship_id, championship['name'], championship['date'], at, at)
+    db.execute(sql, 1, championship['name'], championship['date'], at, at)
   end
-  return championship_id
-end  
-
-def insert_player(db,championship_id,player,at='2012-06-03 00:00:00')
-  
-  lifter_id = 0
-  record = db.execute("select * from lifters where name like '%#{player['name']}%' ")
-  if record != []
-    lifter_id = record[0][0]
-  else 
-    records = db.execute("select * from lifters")
-    lifter_id = records.size + 1
-    #p "insert lifter #{player['name']}, #{player['gender']}"
-    sql = "insert into  lifters values (?, ?, ?, ?, ?, ?)"
-    db.execute(sql, lifter_id, player['name'], player['gender'], '1980-06-03', at, at)
-  end
-
-  records = db.execute("select * from records")
-  record_id = records.size + 1  
-  p lifter_id
-  p championship_id
-
-  sql = "insert into records values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-  #p "insert record #{record_id},#{lifter_id},#{championship_id},#{player['name']},#{player['weight']}"
-  db.execute(sql, record_id, lifter_id, championship_id, 
-            1, player['weight'], player['sq'], player['bp'], player['dl'], at, at,1)
-  
-
 end  
 
 db = SQLite3::Database.new("./db/liftersdb_development.db")
@@ -177,19 +140,11 @@ db.transaction
 begin
   drop(db)
   create(db)
-  championship(db,championship_datas)
-  lifter(db,lifter_datas)
-  record(db,record_datas)
-  players = []
-  championships = []
-  players,championships = parse_csv('./fixtures/datas/2012_all_japan_.csv')
-  championship_id = 0
-  championships.each{|championship|
-    championship_id = insert_championship(db,championship)
-  }
-  players.each{|player|
-    insert_player(db,championship_id,player)
-  }
+  insert(db,championship,players)
+  #championship(db,championship_datas)
+
+  #lifter(db,lifter_datas)
+  #record(db,record_datas)
   db.commit
 rescue  => exc
   p exc
