@@ -1,27 +1,15 @@
-.pagination.pagination-centered
-  ul
-    li
-      a href="#" 1
-    li
-      a href="#" 2
-    li
-      a href="#" 3
-    li
-      a href="#" 4 
-    li
-      a href="#" 5
-
-table.table
-  tr
-    th.first id
-    th name
-    th gender
-    th birthday
-    th.last=="&nbsp;"
-  - for lifter in @lifters do
-    tr
-      td.first = lifter.id
-      td = lifter.name
-      td = lifter.gender
-      td = lifter.birthday
-      td.last
+span12
+ h2 == @title
+.container style="margin-top: 10px"
+  table.table.table-striped.table-bordered id="example" cellpadding="0" cellspacing="0" border="0"
+    thead
+      tr
+        th name
+        th gender
+        th birthday
+    tbody
+      - for lifter in @lifters do
+        tr 
+          td = lifter.name
+          td = lifter.gender
+          td = lifter.birthday

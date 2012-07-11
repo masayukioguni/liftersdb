@@ -19,40 +19,40 @@ Liftersdb.controllers :lifters do
   #   "Hello world!"
   # end
 
-  get :index do    @title = "lifters list:"
+  get :index do    
+    @title = "lifters list:"
     @lifters = Lifter.all
     render 'lifters/index'
   end
-   
-  def find_by_lifter_id(lifter_id)
-    records = Record.joins(:championship)
-    return records.where(:lifter_id => lifter_id).order('championships.date')
-  end
 
-  def find_by_equipment_powerlifing(lifter_id)
-    records = find_by_lifter_id(lifter_id)
-    records.where(:equipment => 1)
-    return records.all
-  end
+  get "/men" do    
+    @title = "lifters list"
+    @lifters = find_by_gender(1).all
+    p @lifters
+    render 'lifters/index'
+  end  
+
+  get "/women" do    
+    @title = "lifters list"
+    @lifters = find_by_gender(0).all
+    render 'lifters/index'
+  end 
 
   get :show, :with => :id do
     @id = params[:id]
-    @equipment = params[:equipment] ? params[:equipment] : 1
-    @type = params[:type] ? params[:type] : 1
+    @gender,@equipment,@type = parse_request_params(params)
     @lifter = Lifter.find(@id)
-    @records = find_by_equipment_type(@id,@equipment,@type)
+    @records = find_by_gender_equipment_type(@id,@gender,@equipment,@type) 
     render 'lifters/show'
   end
 
   get :csv, :with => :id do
     @id = params[:id]
-    @equipment = params[:equipment] ? params[:equipment] : 1
-    @type = params[:type] ? params[:type] : 1
-    records = find_by_equipment_type(@id,@equipment,@type)
+    @gender,@equipment,@type = parse_request_params(params)
+    
+    records = find_by_gender_equipment_type(@id,@gender,@equipment,@type)
     records = records.all
-    p records
     text = "date,weight,squat,bencpress,deadlift,total\n";
-
     records.each{|record|
       text += record.championship.date.to_s
       text += ","
