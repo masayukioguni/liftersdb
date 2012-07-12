@@ -25,31 +25,23 @@ Liftersdb.controllers :lifters do
     render 'lifters/index'
   end
 
-  get "/men" do    
-    @title = "lifters list"
-    lifters = Lifter.where(:gender => 1)
-    @lifters = []
-    lifters.each{|lifter|
-      
-
-
-      temp = {
-		'name' => lifter.name,
-		'gender' => 1,
-                'birthday' => "1"
-             }
-      @lifters.push(temp)
-      p lifter.record
-    }
-    p @lifters
+  get "/pl/men" do    
+    @title = "男子リフター一覧"
+    @lifters = find_by_lifter_list(1,1,1)
     render 'lifters/index'
   end  
 
-  get "/women" do    
-    @title = "lifters list"
-    @lifters = find_by_gender(0).all
+  get "/pl/women" do    
+    @title = "女子リフター一覧"
+    @lifters = find_by_lifter_list(0,1,1)
     render 'lifters/index'
-  end 
+  end
+
+  get "/bp/men" do    
+    @title = "男子ベンチ一覧"
+    @lifters = find_by_lifter_list(1,1,0)
+    render 'lifters/index'
+  end  
 
   get :show, :with => :id do
     @id = params[:id]

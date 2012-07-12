@@ -5,11 +5,13 @@ span12
     thead
       tr
         th name
-        th gender
-        th birthday
+        th class
+        th weight
+        th total
     tbody
       - for lifter in @lifters do
         tr 
           td = lifter['name']
-          td = lifter['gender']
-          td = lifter['birthday']
+          th = ""
+          td = lifter['weight']
+          td = lifter['total']
