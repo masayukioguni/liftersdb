@@ -15,7 +15,7 @@ Liftersdb.helpers do
   end
 
   def find_by_gender(gender) 
-    lifter = Lifter.from(:record)
+    lifter = Lifter.joins(:record)
     return lifter.where(:gender => gender)
   end
 

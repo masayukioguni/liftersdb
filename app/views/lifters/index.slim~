@@ -10,6 +10,6 @@ span12
     tbody
       - for lifter in @lifters do
         tr 
-          td = lifter['name']
-          td = lifter['gender']
-          td = lifter['birthday']
+          td = lifter.name
+          td = lifter.gender
+          td = lifter.birthday
