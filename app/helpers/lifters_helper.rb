@@ -1,6 +1,44 @@
 # Helper methods defined here can be accessed in any controller or view in the application
-
 Liftersdb.helpers do
+  class Gender
+    def Gender.men
+      return 1
+    end
+    def Gender.women
+      return 0
+    end
+  end
+
+  class Equipment
+    def Equipment.yes
+      return 1
+    end
+    def Equipment.no
+      return 0
+    end
+  end
+
+  class Recordtype
+    def Recordtype.pl
+      return 1
+    end
+    def Recordtype.bp
+      return 0
+    end
+  end
+
+  def get_men_class_name(weight)
+    p weight
+    if weight <= 59 then return '59kg' end
+    if weight <= 66 then return '66kg' end
+    if weight <= 74 then return '74kg' end
+    if weight <= 83 then return '83kg' end
+    if weight <= 93 then return '93kg' end
+    if weight <= 105 then return '105kg' end
+    if weight <= 120 then return '120kg' end
+    if weight >= 120.1 then return '120kg+' end
+  end
+  
   def get_project_name
     return 'Lifters db'
   end
@@ -16,22 +54,26 @@ Liftersdb.helpers do
 
   def find_by_lifter_list(gender,equipment,record_type)
     lifters_record = []
-    lifters = Lifter.where(:gender => gender).each{|lifter|
+    lifters = Lifter.where(:gender => gender).order("id").each{|lifter|
       best_total = 0
       best_weight = 0
-      lifter.record.where(:lifter_id => lifter.id,:equipment => equipment,:record_type => record_type).each{|record|
+      lifter.record.where(:lifter_id => lifter.id,:equipment => equipment,:record_type => record_type).order("id").each{|record|
         total = record.total
         if total > best_total
           best_total = total
           best_weight = record.weight
         end
       }
-      record = {
-            'name' => lifter.name,
-            'weight' => best_weight,
-            'total' => best_total
-      }
-      lifters_record.push(record)
+      if best_total != 0
+        record = {
+              'id' => lifter.id,
+              'class_name' => get_men_class_name(best_weight),
+              'name' => lifter.name,
+              'weight' => best_weight,
+              'total' => best_total
+        }
+        lifters_record.push(record)
+      end
     }
     return lifters_record
   end

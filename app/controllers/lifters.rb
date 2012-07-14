@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 Liftersdb.controllers :lifters do
+
   # get :index, :map => "/foo/bar" do
   #   session[:foo] = "bar"
   #   render 'index'
@@ -27,19 +28,19 @@ Liftersdb.controllers :lifters do
 
   get "/pl/men" do    
     @title = "男子リフター一覧"
-    @lifters = find_by_lifter_list(1,1,1)
+    @lifters = find_by_lifter_list(Gender.men,Equipment.yes,Recordtype.pl)
     render 'lifters/index'
   end  
 
   get "/pl/women" do    
     @title = "女子リフター一覧"
-    @lifters = find_by_lifter_list(0,1,1)
+    @lifters = find_by_lifter_list(Gender.women,Equipment.yes,Recordtype.pl)
     render 'lifters/index'
   end
 
   get "/bp/men" do    
     @title = "男子ベンチ一覧"
-    @lifters = find_by_lifter_list(1,1,0)
+    @lifters = find_by_lifter_list(Gender.men,Equipment.yes,Recordtype.bp)
     render 'lifters/index'
   end  
 
@@ -47,7 +48,7 @@ Liftersdb.controllers :lifters do
     @id = params[:id]
     @gender,@equipment,@type = parse_request_params(params)
     @lifter = Lifter.find(@id)
-    @records = find_by_gender_equipment_type(@id,@gender,@equipment,@type) 
+    @records = find_by_gender_equipment_type(@id,@equipment,@type) 
     render 'lifters/show'
   end
 
@@ -55,7 +56,7 @@ Liftersdb.controllers :lifters do
     @id = params[:id]
     @gender,@equipment,@type = parse_request_params(params)
     
-    records = find_by_gender_equipment_type(@id,@gender,@equipment,@type)
+    records = find_by_gender_equipment_type(@id,@equipment,@type)
     records = records.all
     text = "date,weight,squat,bencpress,deadlift,total\n";
     records.each{|record|

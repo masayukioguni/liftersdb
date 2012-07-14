@@ -51,27 +51,6 @@ def lifter(db,datas,at='2012-06-03 00:00:00')
 end  
 
 record_datas = [[1,1,1,64.7,227.5,165.0,200,1],
-         	[1,2,1,64.7,220,172.5,187.5,1],
-        	[1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
-                [1,1,1,64.7,227.5,165.0,200,1],
-                [1,2,1,64.7,220,172.5,187.5,1],
                 [1,1,1,64.7,227.5,165.0,200,1],
                 [1,2,1,64.7,220,172.5,187.5,1],
                 [2,1,1,64.7,220,172.5,187.5,1],
@@ -116,14 +95,13 @@ def parse_csv(name)
       player = {}
       player['name'] = row[0]
       player['gender'] = row[1]
-      player['years'] = row[2]
-      player['weight'] = row[3].to_f
-      # 4/5/6
-      player['sq'] = get_best_result(row,4)
-      # 7/8/9
-      player['bp'] = get_best_result(row,7)
-      # 10/11/12
-      player['dl'] = get_best_result(row,10)
+      player['equipment'] = row[2]
+      player['record_type'] = row[3]
+      player['years'] = row[4]
+      player['weight'] = row[5].to_f
+      player['sq'] = get_best_result(row,6)
+      player['bp'] = get_best_result(row,9)
+      player['dl'] = get_best_result(row,12)
       players.push(player)
     end
   end
@@ -154,24 +132,25 @@ def insert_player(db,championship_id,player,at='2012-06-03 00:00:00')
   else 
     records = db.execute("select * from lifters")
     lifter_id = records.size + 1
-    #p "insert lifter #{player['name']}, #{player['gender']}"
+    p "insert lifter #{player['name']}, #{player['gender']}"
     sql = "insert into  lifters values (?, ?, ?, ?, ?, ?)"
     db.execute(sql, lifter_id, player['name'], player['gender'], '1980-06-03', at, at)
   end
 
   records = db.execute("select * from records")
   record_id = records.size + 1  
-  p lifter_id
-  p championship_id
-
   sql = "insert into records values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-  #p "insert record #{record_id},#{lifter_id},#{championship_id},#{player['name']},#{player['weight']}"
+  p "insert record #{record_id},#{lifter_id},#{championship_id},#{player['name']},#{player['weight']}"
   db.execute(sql, record_id, lifter_id, championship_id, 
-            1, player['weight'], player['sq'], player['bp'], player['dl'], at, at,1)
-  
+            player['equipment'], player['weight'], player['sq'], 
+            player['bp'], player['dl'], at, at,player['record_type'])
 
 end  
-
+pl_datas = ["2012_all_japan_power.csv",
+            "2011_all_japan_power_men.csv",
+            "2011_all_japan_power_women.csv",
+            "2011_all_japan_bench.csv",
+            ]
 db = SQLite3::Database.new("./db/liftersdb_development.db")
 db.transaction
 begin
@@ -182,13 +161,17 @@ begin
   record(db,record_datas)
   players = []
   championships = []
-  players,championships = parse_csv('./fixtures/datas/2012_all_japan_.csv')
-  championship_id = 0
-  championships.each{|championship|
-    championship_id = insert_championship(db,championship)
-  }
-  players.each{|player|
-    insert_player(db,championship_id,player)
+  base_path = "./fixtures/datas/"
+  pl_datas.each{ |name| 
+    file_path = base_path + name
+    players,championships = parse_csv(file_path)
+    championship_id = 0
+    championships.each{|championship|
+      championship_id = insert_championship(db,championship)
+    }
+    players.each{|player|
+      insert_player(db,championship_id,player)
+    }
   }
   db.commit
 rescue  => exc
