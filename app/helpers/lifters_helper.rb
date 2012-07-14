@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 # Helper methods defined here can be accessed in any controller or view in the application
 Liftersdb.helpers do
   class Gender
@@ -27,8 +28,18 @@ Liftersdb.helpers do
     end
   end
 
+  def get_women_class_name(weight)
+    if weight <= 59 then return '59kg' end
+    if weight <= 66 then return '66kg' end
+    if weight <= 74 then return '74kg' end
+    if weight <= 83 then return '83kg' end
+    if weight <= 93 then return '93kg' end
+    if weight <= 105 then return '105kg' end
+    if weight <= 120 then return '120kg' end
+    if weight >= 120.1 then return '120kg+' end
+  end
+
   def get_men_class_name(weight)
-    p weight
     if weight <= 59 then return '59kg' end
     if weight <= 66 then return '66kg' end
     if weight <= 74 then return '74kg' end
@@ -39,6 +50,40 @@ Liftersdb.helpers do
     if weight >= 120.1 then return '120kg+' end
   end
   
+  def get_gender_text(gender)
+    if gender == Gender.men
+      return "男子"
+    elsif gender == Gender.women
+      return "女子"
+    else
+      return "不明"
+    end
+  end
+
+  def get_equipment_text(equipment)
+    if equipment == Equipment.yes
+      return "フルギア"
+    elsif equipment == Equipment.no
+      return "ノーギア"
+    else
+      return "不明"
+    end
+  end
+
+  def get_type_text(record_type)
+    if record_type == Recordtype.pl
+      return "パワーリフティング"
+    elsif record_type == Recordtype.bp
+      return "ベンチプレス"
+    else
+      return "不明"
+    end
+  end
+
+  def get_title(gender,equipment,record_type)
+    return get_gender_text(gender) + "/" + get_type_text(record_type) + "/" + get_equipment_text(equipment)
+  end
+
   def get_project_name
     return 'Lifters db'
   end
@@ -79,9 +124,9 @@ Liftersdb.helpers do
   end
 
   def parse_request_params(params)
-    equipment = params[:equipment] ? params[:equipment] : 1
-    type = params[:type] ? params[:type] : 1
-    gender = params[:gender] ? params[:gender] : 1
+    equipment = params[:equipment] ? params[:equipment].to_i : 1
+    type = params[:type] ? params[:type].to_i : 1
+    gender = params[:gender] ? params[:gender].to_i : 1
     return gender,equipment,type
   end
 end

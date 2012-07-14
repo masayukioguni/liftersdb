@@ -20,11 +20,13 @@ Liftersdb.controllers :lifters do
   #   "Hello world!"
   # end
 
-  get :index do    
-    @title = "lifters list:"
-    @lifters = Lifter.all
+  get :index  do
+    @gender,@equipment,@type = parse_request_params(params)
+    @title = get_title(@gender,@equipment,@type)
+    @lifters = find_by_lifter_list(@gender,@equipment,@type)
     render 'lifters/index'
-  end
+  end  
+
 
   get "/pl/men" do    
     @title = "男子リフター一覧"
