@@ -18,4 +18,4 @@ span12
           td = lifter['class_name']
           td = lifter['weight']
           td = lifter['total']
-          td == link_to "詳細", url('/lifters/show/' + lifter["id"].to_s)
+          td == link_to "詳細", url('/lifters/show/' + lifter["id"].to_s + "?gender=#{@gender}&equipment=#{@equipment}&type=#{@type}")

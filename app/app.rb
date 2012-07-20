@@ -58,6 +58,10 @@ class Liftersdb < Padrino::Application
   #   end
   #
   get "/" do
+    @lifters_count = Lifter.all().size
+    @championships_count = Championship.all().size
+    @records_count = Record.all().size
+    
     render 'index'
   end
 

@@ -1,0 +1,14 @@
+table.table.table-striped.table-bordered id="example" cellpadding="0" cellspacing="0" border="0"
+  thead
+    tr
+      th date
+      th weight
+      th BP
+      th formula        
+  tbody
+    - for record in @records do
+      tr 
+        td = record.championship.date
+        td = record.weight
+        td = record.benchpress
+        td = record.formula

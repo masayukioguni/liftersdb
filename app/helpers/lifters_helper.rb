@@ -1,92 +1,6 @@
 # -*- encoding: utf-8 -*-
 # Helper methods defined here can be accessed in any controller or view in the application
 Liftersdb.helpers do
-  class Gender
-    def Gender.men
-      return 1
-    end
-    def Gender.women
-      return 0
-    end
-  end
-
-  class Equipment
-    def Equipment.yes
-      return 1
-    end
-    def Equipment.no
-      return 0
-    end
-  end
-
-  class Recordtype
-    def Recordtype.pl
-      return 1
-    end
-    def Recordtype.bp
-      return 0
-    end
-  end
-
-  def get_women_class_name(weight)
-    if weight <= 59 then return '59kg' end
-    if weight <= 66 then return '66kg' end
-    if weight <= 74 then return '74kg' end
-    if weight <= 83 then return '83kg' end
-    if weight <= 93 then return '93kg' end
-    if weight <= 105 then return '105kg' end
-    if weight <= 120 then return '120kg' end
-    if weight >= 120.1 then return '120kg+' end
-  end
-
-  def get_men_class_name(weight)
-    if weight <= 59 then return '59kg' end
-    if weight <= 66 then return '66kg' end
-    if weight <= 74 then return '74kg' end
-    if weight <= 83 then return '83kg' end
-    if weight <= 93 then return '93kg' end
-    if weight <= 105 then return '105kg' end
-    if weight <= 120 then return '120kg' end
-    if weight >= 120.1 then return '120kg+' end
-  end
-  
-  def get_gender_text(gender)
-    if gender == Gender.men
-      return "男子"
-    elsif gender == Gender.women
-      return "女子"
-    else
-      return "不明"
-    end
-  end
-
-  def get_equipment_text(equipment)
-    if equipment == Equipment.yes
-      return "フルギア"
-    elsif equipment == Equipment.no
-      return "ノーギア"
-    else
-      return "不明"
-    end
-  end
-
-  def get_type_text(record_type)
-    if record_type == Recordtype.pl
-      return "パワーリフティング"
-    elsif record_type == Recordtype.bp
-      return "ベンチプレス"
-    else
-      return "不明"
-    end
-  end
-
-  def get_title(gender,equipment,record_type)
-    return get_gender_text(gender) + "/" + get_type_text(record_type) + "/" + get_equipment_text(equipment)
-  end
-
-  def get_project_name
-    return 'Lifters db'
-  end
 
   def find_by_lifter_id(lifter_id)
     return Record.joins(:championship).where(:lifter_id => lifter_id)
@@ -102,25 +16,68 @@ Liftersdb.helpers do
     lifters = Lifter.where(:gender => gender).order("id").each{|lifter|
       best_total = 0
       best_weight = 0
-      lifter.record.where(:lifter_id => lifter.id,:equipment => equipment,:record_type => record_type).order("id").each{|record|
-        total = record.total
-        if total > best_total
-          best_total = total
-          best_weight = record.weight
-        end
-      }
-      if best_total != 0
-        record = {
+      records= lifter.record.where(:lifter_id => lifter.id,:equipment => equipment,:record_type => record_type)
+      records = records.joins(:championship)
+      records.order('championships.date DESC').limit(1).each{|record|
+        lifter_record = {
               'id' => lifter.id,
-              'class_name' => get_men_class_name(best_weight),
+              'class_name' => get_men_class_name(record.weight),
               'name' => lifter.name,
-              'weight' => best_weight,
-              'total' => best_total
+              'weight' => record.weight,
+              'total' => record.total,
+              'date' => record.championship.date
         }
-        lifters_record.push(record)
-      end
+        lifters_record.push(lifter_record)
+      }
     }
     return lifters_record
+  end
+
+  def record_to_powerlifting_csv(records)
+    text = "date,weight,squat,bencpress,deadlift,total\n";
+    records.each{|record|
+      text += record.championship.date.to_s
+      text += ","
+      text += record.weight.to_s
+      text += ","
+      text += record.squat.to_s
+      text += ","
+      text += record.benchpress.to_s
+      text += ","
+      text += record.deadlift.to_s
+      text += ","
+      text += record.total.to_s
+      text += "\n"
+    }
+    return text
+  end 
+
+  def get_template_name(record_type)
+    template_array = ['benchpress','powerlifting']
+    return template_array[record_type.to_i]
+  end
+
+  def record_to_benchpress_csv(records)
+    text = "date,weight,bencpress\n";
+    records.each{|record|
+      text += record.championship.date.to_s
+      text += ","
+      text += record.weight.to_s
+      text += ","
+      text += record.benchpress.to_s
+      text += "\n"
+    }
+    return text
+  end
+
+  def record_to_csv(record_type,records) 
+    if Recordtype.is_powerlifting(record_type)
+      return record_to_powerlifting_csv(records)
+    end
+
+    if Recordtype.is_benchpress(record_type)
+      return record_to_benchpress_csv(records)
+    end
   end
 
   def parse_request_params(params)
